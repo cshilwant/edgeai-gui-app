@@ -219,7 +219,8 @@ private:
     QString ip_addr_p;
 
 public:
-    string soc;
+    string  soc;
+    QString sdk_ver;
 
     Q_PROPERTY(QString ip_addr READ ip_addr WRITE set_ip_addr NOTIFY ip_addr_changed)
 
@@ -228,7 +229,9 @@ public:
     }
 
     void set_ip_addr(QString ip_addr_n) {
-        ip_addr_p = ip_addr_n;
+        ip_addr_p = sdk_ver;
+        if (ip_addr_n != "")
+            ip_addr_p += " | " + ip_addr_n;
         emit ip_addr_changed();
     }
 

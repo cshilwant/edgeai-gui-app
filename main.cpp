@@ -23,6 +23,18 @@ void sigHandler(int s)
 
 void GetIpAddr()
 {
+    // Get SDK Version
+    const string SDK_VER = string(std::getenv("EDGEAI_SDK_VERSION"));
+    if (SDK_VER != "")
+    {
+        backend.sdk_ver = "<font color=\"#FEFFFF\">VERSION: </font>\
+                           <font color=\"#00FF00\">" +
+                           QString::fromStdString(SDK_VER) +
+                           "</font>";
+    }
+    backend.set_ip_addr("");
+
+    QString ip;
     // Fetch IP Addr of the target to display at the bottom of the application
     for(int i = 0; i < 10; i++) {
         foreach (const QNetworkInterface &netInterface, QNetworkInterface::allInterfaces()) {
@@ -30,7 +42,11 @@ void GetIpAddr()
             if( (bool)(flags & QNetworkInterface::IsRunning) && !(bool)(flags & QNetworkInterface::IsLoopBack)){
                 foreach (const QNetworkAddressEntry &address, netInterface.addressEntries()) {
                     if(address.ip().protocol() == QAbstractSocket::IPv4Protocol) {
-                        backend.set_ip_addr("IP Addr: " + address.ip().toString());
+                        ip = "<font color=\"#FEFFFF\">IP: </font>\
+                              <font color=\"#00FF00\">" +
+                              address.ip().toString() +
+                              "</font>";
+                        backend.set_ip_addr(ip);
                         emit backend.ip_addr_changed();
                         return;
                     }
