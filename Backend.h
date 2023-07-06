@@ -243,29 +243,34 @@ public:
         string cl_pipeline;
         string od_pipeline;
         string ss_pipeline;
+        string multi_channel_pipeline;
         if (soc == "am62a")
         {
             cl_pipeline = am62a_cl_pipeline;
             od_pipeline = am62a_od_pipeline;
             ss_pipeline = am62a_ss_pipeline;
+            multi_channel_pipeline = am62a_multi_channel_pipeline;
         }
         else if (soc == "j721s2")
         {
             cl_pipeline = j721s2_cl_pipeline;
             od_pipeline = j721s2_od_pipeline;
             ss_pipeline = j721s2_ss_pipeline;
+            multi_channel_pipeline = j721s2_multi_channel_pipeline;
         }
         else if (soc == "j721e")
         {
             cl_pipeline = j721e_cl_pipeline;
             od_pipeline = j721e_od_pipeline;
             ss_pipeline = j721e_ss_pipeline;
+            multi_channel_pipeline = j721e_multi_channel_pipeline;
         }
         else if (soc == "j784s4")
         {
             cl_pipeline = j784s4_cl_pipeline;
             od_pipeline = j784s4_od_pipeline;
             ss_pipeline = j784s4_ss_pipeline;
+            multi_channel_pipeline = j784s4_multi_channel_pipeline;
         }
 
         if (button == 1) {
@@ -279,7 +284,12 @@ public:
             pipeline = "gst-pipeline: " + ss_pipeline;
             addSink(pipeline, x, y, width, height);
             pipeline += " sync=false";
-        } else {
+        } else if (button == 4) {
+            pipeline = "gst-pipeline: " + multi_channel_pipeline;
+            addSink(pipeline, x, y, width, height);
+            pipeline += " sync=false";
+        }
+        else {
             printf("WARNING: Invalid Button click from Left Menu!\n");
         }
         return QString().fromStdString(pipeline);

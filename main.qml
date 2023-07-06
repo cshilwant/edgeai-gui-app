@@ -10,28 +10,39 @@ Window {
     visible: true
     visibility: "FullScreen"
     title: qsTr("Edge AI gallery")
+    property var bgColor: "#111517"
+    property var whiteColor: "#FEFFFF"
+    property var buttonStopColor: "#c2324a"
+    property var buttonIdleColor: "#1de0bf"
+    property var buttonHoverColor: "#7dffe9"
+
+    MouseArea {
+        id: globalMouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+    }
 
     Rectangle {
         id: appBackground
-        color: "#17252A"
+        color: bgColor
         width: parent.width
         height: parent.height
 
         Rectangle {
             id: topBar
             width: parent.width
-            height: parent.height * 0.1
+            height: parent.height * 0.08
             anchors.top: parent.top
             anchors.left: parent.left
-            color: "#17252A"
+            color: bgColor
 
             Image {
                 id: topBarLogo
                 scale: Qt.KeepAspectRatio
                 height: parent.height
-                width: height * 2.84 // To maintain the aspect ratio of the image
+                width: height * 2.82 // To maintain the aspect ratio of the image
                 anchors.top: parent.top
-                anchors.topMargin: parent.height * 0.1
+                anchors.topMargin: parent.height * 0.08
                 source: "images/Texas-Instruments.png"
             }
 
@@ -45,7 +56,7 @@ Window {
                 anchors.left: topBarLogo.right
                 anchors.top: parent.top
 
-                color: "#FEFFFF"
+                color: whiteColor
                 font.family: "Ubuntu"
                 font.bold: true
                 font.pointSize: 35
@@ -56,7 +67,7 @@ Window {
             Button {
                 id: topBarExitButton
                 onClicked: Qt.quit()
-                height: parent.height * 0.2
+                height: parent.height * 0.3
                 width: height
 
                 anchors.right: parent.right
@@ -66,14 +77,25 @@ Window {
 
                 background: Rectangle {
                     Text {
-                        text: "×"
+                        text: "X"
                         font.pointSize: 12
-                        color: "#FEFFFF"
+                        color: whiteColor
                         anchors.centerIn: parent
                         font.bold: true
                     }
                     color: "#FF0000"
                     radius: parent.height
+                }
+
+                MouseArea {
+                    width: parent.width
+                    height: parent.height
+                    cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    enabled: false
+                    readonly property bool containsMouse: {
+                        var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                        return contains(Qt.point(relativePos.x, relativePos.y));
+                    }
                 }
             }
         }
@@ -85,38 +107,35 @@ Window {
             anchors.top: topBar.bottom
             anchors.left: parent.left
 
-            color: "#17252A"
+            color: bgColor
 
             Rectangle {
                 id: leftSubMenu
 
                 width: parent.width * 0.9
-                height: parent.height * 0.6
+                height: parent.height * 0.7
                 anchors.horizontalCenter: leftMenu.horizontalCenter
                 anchors.verticalCenter: leftMenu.verticalCenter
-                color: "#344045"
+                color: "#1c2326"
 
-                border.color: "#DEF2F1"
+                border.color: whiteColor
                 border.width: 1
-                radius: 10
+                radius: 2
 
                 CheckBox {
                     id: leftMenuButton1
-                    text: "Image Classification"
-                    font.bold: true
-                    font.pointSize: 13
-                    height: parent.height * 0.5 / 3
+                    height:  (parent.height - (0.2 * parent.height)) / 5
                     width: parent.width * 0.85
                     anchors.top: parent.top
-                    anchors.topMargin: parent.height * 0.2 / 3
+                    anchors.topMargin:(0.2 * parent.height) / 6
                     anchors.horizontalCenter: parent.horizontalCenter
                     indicator: Rectangle {}
                     background: Rectangle {
                         id: leftMenuButton1BG
-                        color: !parent.enabled ? "#17252A" : (parent.hovered ? "#84CDC9" : (parent.checkState===Qt.Checked? "#2B837F" : "#3AAFA9"))
-                        border.color: "#DEF2F1"
+                        color: !parent.enabled ? bgColor : (parent.checkState===Qt.Checked? buttonStopColor : (mouseArea1.containsMouse ? buttonHoverColor : buttonIdleColor))
+                        border.color: whiteColor
                         border.width: 1
-                        radius: 10
+                        radius: 5
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton1.checked) {
@@ -124,32 +143,53 @@ Window {
                             leftMenuButton2.enabled = false
                             leftMenuButton3.enabled = false
                             leftMenuButton4.enabled = false
+                            leftMenuButton5.enabled = false
                         } else {
                             mediaplayer1.source = " "
                             leftMenuButton2.enabled = true
                             leftMenuButton3.enabled = true
                             leftMenuButton4.enabled = true
+                            leftMenuButton5.enabled = true
                         }
+                    }
+
+                    MouseArea {
+                        id: mouseArea1
+                        width: parent.width
+                        height: parent.height
+                        cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: false
+                        readonly property bool containsMouse: {
+                            var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                            return contains(Qt.point(relativePos.x, relativePos.y));
+                        }
+                    }
+
+
+                    Text {
+                        text: "Image Classification"
+                        font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPointSize: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter 
                     }
                 }
 
                 CheckBox {
                     id: leftMenuButton2
-                    text: "Object Detection"
-                    font.bold: true
-                    font.pointSize: 13
-                    height: parent.height * 0.5 / 3
+                    height: (parent.height - (0.2 * parent.height)) / 5
                     width: parent.width * 0.85
                     anchors.top: leftMenuButton1.bottom
-                    anchors.topMargin: parent.height * 0.2 / 3
+                    anchors.topMargin:(0.2 * parent.height) / 6
                     anchors.horizontalCenter: parent.horizontalCenter
                     indicator: Rectangle {}
                     background: Rectangle {
                         id: leftMenuButton2BG
-                        color: !parent.enabled ? "#17252A" : (parent.hovered ? "#84CDC9" : (parent.checkState===Qt.Checked? "#2B837F" : "#3AAFA9"))
-                        border.color: "#DEF2F1"
+                        color: !parent.enabled ? bgColor : (parent.checkState===Qt.Checked? buttonStopColor : (mouseArea2.containsMouse ? buttonHoverColor : buttonIdleColor))
+                        border.color: whiteColor
                         border.width: 1
-                        radius: 10
+                        radius: 5
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton2.checked) {
@@ -157,31 +197,49 @@ Window {
                             leftMenuButton1.enabled = false
                             leftMenuButton3.enabled = false
                             leftMenuButton4.enabled = false
+                            leftMenuButton5.enabled = false
                         } else {
                             mediaplayer1.source = " "
                             leftMenuButton1.enabled = true
                             leftMenuButton3.enabled = true
                             leftMenuButton4.enabled = true
+                            leftMenuButton5.enabled = true
                         }
+                    }
+                    MouseArea {
+                        id: mouseArea2
+                        width: parent.width
+                        height: parent.height
+                        cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: false
+                        readonly property bool containsMouse: {
+                            var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                            return contains(Qt.point(relativePos.x, relativePos.y));
+                        }
+                    }
+                    Text {
+                        text: "Object Detection"
+                        font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPointSize: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter 
                     }
                 }
                 CheckBox {
                     id: leftMenuButton3
-                    text: "Semantic Segmentation"
-                    font.bold: true
-                    font.pointSize: 13
-                    height: parent.height * 0.5 / 3
+                    height: (parent.height - (0.2 * parent.height)) / 5
                     width: parent.width * 0.85
                     anchors.top: leftMenuButton2.bottom
-                    anchors.topMargin: parent.height * 0.2 / 3
+                    anchors.topMargin:(0.2 * parent.height) / 6
                     anchors.horizontalCenter: parent.horizontalCenter
                     indicator: Rectangle {}
                     background: Rectangle {
                         id: leftMenuButton3BG
-                        color: !parent.enabled ? "#17252A" : (parent.hovered ? "#84CDC9" : (parent.checkState===Qt.Checked? "#2B837F" : "#3AAFA9"))
-                        border.color: "#DEF2F1"
+                        color: !parent.enabled ? bgColor : (parent.checkState===Qt.Checked? buttonStopColor : (mouseArea3.containsMouse ? buttonHoverColor : buttonIdleColor))
+                        border.color: whiteColor
                         border.width: 1
-                        radius: 10
+                        radius: 5
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton3.checked) {
@@ -189,57 +247,149 @@ Window {
                             leftMenuButton1.enabled = false
                             leftMenuButton2.enabled = false
                             leftMenuButton4.enabled = false
+                            leftMenuButton5.enabled = false
+
                         } else {
                             mediaplayer1.source = " "
                             leftMenuButton1.enabled = true
                             leftMenuButton2.enabled = true
                             leftMenuButton4.enabled = true
+                            leftMenuButton5.enabled = true
                         }
+                    }
+                    MouseArea {
+                        id: mouseArea3
+                        width: parent.width
+                        height: parent.height
+                        cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: false
+                        readonly property bool containsMouse: {
+                            var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                            return contains(Qt.point(relativePos.x, relativePos.y));
+                        }
+                    }
+                    Text {
+                        text: "Semantic Segmentation"
+                        font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPointSize: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter 
                     }
                 }
                 CheckBox {
                     id: leftMenuButton4
-                    text: "Custom"
-                    font.bold: true
-                    font.pointSize: 13
-                    height: parent.height * 0.5 / 3
+                    height: (parent.height - (0.2 * parent.height)) / 5
                     width: parent.width * 0.85
                     anchors.top: leftMenuButton3.bottom
-                    anchors.topMargin: parent.height * 0.2 / 3
+                    anchors.topMargin:(0.2 * parent.height) / 6
                     anchors.horizontalCenter: parent.horizontalCenter
                     indicator: Rectangle {}
                     background: Rectangle {
                         id: leftMenuButton4BG
-                        color: !parent.enabled ? "#17252A" : (parent.hovered ? "#84CDC9" : (parent.checkState===Qt.Checked? "#2B837F" : "#3AAFA9"))
-                        border.color: "#DEF2F1"
+                        color: !parent.enabled ? bgColor : (parent.checkState===Qt.Checked? buttonStopColor : (mouseArea4.containsMouse ? buttonHoverColor : buttonIdleColor))
+                        border.color: whiteColor
                         border.width: 1
-                        radius: 10
+                        radius: 5
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton4.checked) {
-                            popupError.text = " "
-                            popup.open()
+                            mediaplayer1.source = backend.leftMenuButtonPressed(4, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height)
                             leftMenuButton1.enabled = false
                             leftMenuButton2.enabled = false
                             leftMenuButton3.enabled = false
+                            leftMenuButton5.enabled = false
+
                         } else {
                             mediaplayer1.source = " "
                             leftMenuButton1.enabled = true
                             leftMenuButton2.enabled = true
                             leftMenuButton3.enabled = true
+                            leftMenuButton5.enabled = true
                         }
+                    }
+                    MouseArea {
+                        id: mouseArea4
+                        width: parent.width
+                        height: parent.height
+                        cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: false
+                        readonly property bool containsMouse: {
+                            var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                            return contains(Qt.point(relativePos.x, relativePos.y));
+                        }
+                    }
+                    Text {
+                        text: "Multi Channel"
+                        font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPointSize: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter 
+                    }
+                }
+
+                CheckBox {
+                    id: leftMenuButton5
+                    height: (parent.height - (0.2 * parent.height)) / 5
+                    width: parent.width * 0.85
+                    anchors.top: leftMenuButton4.bottom
+                    anchors.topMargin:(0.2 * parent.height) / 6
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    indicator: Rectangle {}
+                    background: Rectangle {
+                        id: leftMenuButton5BG
+                        color: !parent.enabled ? bgColor : (parent.checkState===Qt.Checked? buttonStopColor : (mouseArea5.containsMouse ? buttonHoverColor : buttonIdleColor))
+                        border.color: whiteColor
+                        border.width: 1
+                        radius: 5
+                    }
+                    onCheckStateChanged: {
+                        if (leftMenuButton5.checked) {
+                            popupError.text = " "
+                            popup.open()
+                            leftMenuButton1.enabled = false
+                            leftMenuButton2.enabled = false
+                            leftMenuButton3.enabled = false
+                            leftMenuButton4.enabled = false
+                        } else {
+                            mediaplayer1.source = " "
+                            leftMenuButton1.enabled = true
+                            leftMenuButton2.enabled = true
+                            leftMenuButton3.enabled = true
+                            leftMenuButton4.enabled = true
+                        }
+                    }
+                    MouseArea {
+                        id: mouseArea5
+                        width: parent.width
+                        height: parent.height
+                        cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        enabled: false
+                        readonly property bool containsMouse: {
+                            var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                            return contains(Qt.point(relativePos.x, relativePos.y));
+                        }
+                    }
+                    Text {
+                        text: "Custom"
+                        font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPointSize: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter 
                     }
                 }
             }
         }
         Rectangle {
             id: mainWindow
-            color: "#17252A"
-            width: parent.width * 0.825
-            height: parent.height * 0.85
+            color: bgColor
+            width: parent.width * 0.84
+            height: parent.height * 0.88
             anchors.top: topBar.bottom
             anchors.left: leftMenu.right
-            anchors.rightMargin: parent.width * 0.025
+            anchors.rightMargin: parent.width * 0.02
 
             Rectangle {
                 id: alignVideo
@@ -248,11 +398,11 @@ Window {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: (parent.height - height) / 2
-                border.color: "#DEF2F1"
+                border.color: whiteColor
                 border.width: 3
 
-                radius: 10
-                color: "#17252A"
+                radius: 5
+                color: bgColor
 
                 Image {
                     width: parent.width
@@ -265,7 +415,6 @@ Window {
                 MediaPlayer {
                     id: mediaplayer1
                     objectName: "mediaplayer1"
-                    // source: is provided by the Cpp Backend
                     autoPlay: true
                 }
 
@@ -293,7 +442,7 @@ Window {
                 background: Rectangle {
                     width: parent.width
                     height: parent.height
-                    border.color: "#DEF2F1"
+                    border.color: whiteColor
                     border.width: 10
                 }
 
@@ -509,7 +658,7 @@ Window {
                     anchors.leftMargin: parent.width * 0.25
 
                     background: Rectangle {
-                        color: parent.hovered ? "#3AAFA9" : "#CCCCCC"
+                        color: parent.hovered ? buttonIdleColor : "#CCCCCC"
                         radius: parent.height
                     }
                 }
@@ -519,7 +668,7 @@ Window {
                     text: "Cancel"
                     onClicked: {
                         popup.close()
-                        leftMenuButton4.checked = false
+                        leftMenuButton5.checked = false
                     }
 
                     width: parent.width * 0.2
@@ -531,7 +680,7 @@ Window {
                     anchors.rightMargin: parent.width * 0.25
 
                     background: Rectangle {
-                        color: parent.hovered ? "#3AAFA9" : "#CCCCCC"
+                        color: parent.hovered ? buttonIdleColor : "#CCCCCC"
                         radius: parent.height
                     }
                 }
@@ -540,7 +689,7 @@ Window {
                     text: "Note: Models may take time to load after you click 'Start'. So please wait for few seconds!"
                     font.pointSize: 10
                     font.bold: true
-                    color: "#2B837F"
+                    color: buttonIdleColor
                     width: parent.width * 0.8
                     anchors.top: popupCancelButton.bottom
                     anchors.topMargin: parent.height * 0.05
@@ -555,7 +704,7 @@ Window {
             anchors.right: mainWindow.right
             anchors.top: mainWindow.bottom
             anchors.bottom: parent.bottom
-            color: "#17252A"
+            color: bgColor
             Text {
                 id: info1
                 text: "<font color=\"#FEFFFF\">Web: </font><font color=\"#FF0000\">https://ti.com/edgeai</font><font color=\"#FEFFFF\"> | Support: </font><font color=\"#FF0000\">https://e2e.ti.com/</font>"
@@ -568,7 +717,7 @@ Window {
                 anchors.right: parent.right
 
                 text: backend.ip_addr
-                color: "#FEFFFF"
+                color: whiteColor
                 font.pointSize: 15
             }
         }

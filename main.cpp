@@ -24,10 +24,10 @@ void sigHandler(int s)
 void GetIpAddr()
 {
     // Get SDK Version
-    const string SDK_VER = string(std::getenv("EDGEAI_SDK_VERSION"));
+    const string SDK_VER = string(std::getenv("EDGEAI_VERSION"));
     if (SDK_VER != "")
     {
-        backend.sdk_ver = "<font color=\"#FEFFFF\">VERSION: </font>\
+        backend.sdk_ver = "<font color=\"#FEFFFF\">Version: </font>\
                            <font color=\"#00FF00\">" +
                            QString::fromStdString(SDK_VER) +
                            "</font>";

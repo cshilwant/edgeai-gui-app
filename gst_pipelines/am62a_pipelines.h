@@ -35,4 +35,14 @@ static string am62a_ss_pipeline = "multifilesrc location=/opt/oob-demo-assets/oo
                             sink_0::startx=\"<320>\"  sink_0::starty=\"<180>\"  sink_0::widths=\"<1280>\"   sink_0::heights=\"<720>\"  \
                             ! video/x-raw,format=NV12, width=1920, height=1080 ! queue ! tiperfoverlay main-title=null title=\"Semantic Segmentation \" ! ";
 
+// Multi Channel Pipeline
+static string am62a_multi_channel_pipeline = "multifilesrc location=/opt/oob-demo-assets/oob-gui-video2.h264 loop=true caps=\"video/x-h264, width=1280, height=720\" ! h264parse ! v4l2h264dec ! video/x-raw,format=NV12 ! \
+                            tiovxmultiscaler name=split_01 \
+                            split_01. ! queue ! video/x-raw, width=416, height=416 ! tiovxdlpreproc data-type=3 channel-order=0 tensor-format=bgr out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/ONR-OD-8200-yolox-nano-lite-mmdet-coco-416x416 ! post_0.tensor \
+                            split_01. ! queue ! video/x-raw, width=1280, height=720 ! post_0.sink \
+                            tidlpostproc name=post_0 model=/opt/model_zoo/ONR-OD-8200-yolox-nano-lite-mmdet-coco-416x416 alpha=0.400000 viz-threshold=0.500000 top-N=5 ! queue ! mosaic_0. \
+                            tiovxmosaic target=1 name=mosaic_0 \
+                            sink_0::startx=\"<320>\"  sink_0::starty=\"<180>\"  sink_0::widths=\"<1280>\"   sink_0::heights=\"<720>\"  \
+                            ! video/x-raw,format=NV12, width=1920, height=1080 ! queue ! tiperfoverlay main-title=null title=\"Object Detection\" ! ";
+
 #endif /* _AM62A_PIPELINES_H_ */
