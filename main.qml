@@ -39,10 +39,12 @@ Window {
             Image {
                 id: topBarLogo
                 scale: Qt.KeepAspectRatio
-                height: parent.height
-                width: height * 2.82 // To maintain the aspect ratio of the image
+                height: parent.height / 2
+                width: height * 8 // To maintain the aspect ratio of the image
                 anchors.top: parent.top
-                anchors.topMargin: parent.height * 0.08
+                anchors.left: parent.left
+                anchors.topMargin: (parent.height - height)/2
+                anchors.leftMargin: 10
                 source: "images/Texas-Instruments.png"
             }
 
