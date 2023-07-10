@@ -58,6 +58,15 @@ private:
         if (height > 1080)
             height = 1080;
 
+        if (width < 1920/4 || height < 1080/4)
+        {
+            pipeline += "tiovxmultiscaler target=1 ! "
+                        "video/x-raw, "
+                        "width=480"
+                        ",height=270"
+                        " ! ";
+        }
+
         if (width < 1920 || height < 1080 ) {
             pipeline += "tiovxmultiscaler ! "
                         "video/x-raw, "
@@ -238,8 +247,6 @@ public:
     explicit Backend (QObject* parent = nullptr) : QObject(parent) {}
 
     Q_INVOKABLE QString leftMenuButtonPressed(int button, int x, int y, int width, int height) {
-        printf("%s\n",soc.c_str());
-
         string cl_pipeline;
         string od_pipeline;
         string ss_pipeline;
