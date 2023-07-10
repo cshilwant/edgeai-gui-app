@@ -170,11 +170,12 @@ Window {
 
                     Text {
                         text: "Image Classification"
-                        font.bold: true
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter 
+                        font.bold: true
+                        font.family: "Helvetica"
+                        font.pixelSize: parent.width * 0.075
+                        color: parent.checkState===Qt.Checked? whiteColor : bgColor
                     }
                 }
 
@@ -221,11 +222,12 @@ Window {
                     }
                     Text {
                         text: "Object Detection"
-                        font.bold: true
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter 
+                        font.bold: true
+                        font.family: "Helvetica"
+                        font.pixelSize: parent.width * 0.075
+                        color: parent.checkState===Qt.Checked? whiteColor : bgColor
                     }
                 }
                 CheckBox {
@@ -272,11 +274,12 @@ Window {
                     }
                     Text {
                         text: "Semantic Segmentation"
-                        font.bold: true
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter 
+                        font.bold: true
+                        font.family: "Helvetica"
+                        font.pixelSize: parent.width * 0.075
+                        color: parent.checkState===Qt.Checked? whiteColor : bgColor
                     }
                 }
                 CheckBox {
@@ -323,11 +326,12 @@ Window {
                     }
                     Text {
                         text: "Multi Channel"
-                        font.bold: true
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter 
+                        font.bold: true
+                        font.family: "Helvetica"
+                        font.pixelSize: parent.width * 0.075
+                        color: parent.checkState===Qt.Checked? whiteColor : bgColor
                     }
                 }
 
@@ -375,11 +379,12 @@ Window {
                     }
                     Text {
                         text: "Custom"
-                        font.bold: true
-                        fontSizeMode: Text.Fit
-                        minimumPointSize: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter 
+                        font.bold: true
+                        font.family: "Helvetica"
+                        font.pixelSize: parent.width * 0.075
+                        color: parent.checkState===Qt.Checked? whiteColor : bgColor
                     }
                 }
             }
