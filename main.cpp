@@ -4,6 +4,7 @@
 #include <QCameraInfo>
 #include <QStringListModel>
 #include <QNetworkInterface>
+#include <QDirIterator>
 #include <csignal>
 #include <thread>
 #include <unistd.h>
@@ -102,16 +103,28 @@ int main(int argc, char *argv[]) {
 
     // Get and Populate contents of /opt/oob-demo-assets/allowedModels.txt to modelNamesList
     // Add the model to list only if it's available in the filesystem
-    modelsfile.open("/opt/oob-demo-assets/allowedModels.txt",ios::in);
-    if (modelsfile.is_open()) {
-        string model;
-        while(getline(modelsfile, model)) {
-            string dir = "/opt/model_zoo/";
-            if (stat((dir + model).c_str(), &sb) == 0)
-                modelslist.append(QString::fromStdString(model));
+    if (strcmp(SOC, "am62a") == 0) {
+        modelsfile.open("/opt/oob-demo-assets/allowedModels.txt",ios::in);
+        if (modelsfile.is_open()) {
+            string model;
+            while(getline(modelsfile, model)) {
+                string dir = "/opt/model_zoo/";
+                if (stat((dir + model).c_str(), &sb) == 0)
+                {
+                    modelslist.append(QString::fromStdString(model));
+                }
+            }
+            modelsfile.close();
         }
-        modelsfile.close();
+    } else {
+        QDirIterator iterateFolders("/opt/model_zoo", QDir::Dirs | QDir::NoDotAndDotDot);
+        while (iterateFolders.hasNext())
+        {
+            iterateFolders.next();
+            modelslist.append(iterateFolders.fileName());
+        }
     }
+
     modelNamesList.setStringList(modelslist);
 
     // set context properties to access in QML
