@@ -10,7 +10,7 @@
 #include <gst_pipelines/am62a_pipelines.h>
 #include <gst_pipelines/j721e_pipelines.h>
 #include <gst_pipelines/j721s2_pipelines.h>
-#include <gst_pipelines/j784s2_pipelines.h>
+#include <gst_pipelines/j784s4_pipelines.h>
 
 using namespace std;
 
@@ -31,14 +31,15 @@ static string custom_template =     "title: <title>\n"
                                     "models:\n"
                                     "   dl_model:\n"
                                     "       model_path: <model>\n"
+                                    "       viz-threshold: 0.6\n"
                                     "outputs:\n"
                                     "   output:\n"
                                     "       sink: fakesink\n"
                                     "       width: 1920\n"
                                     "       height: 1080\n"
-                                    "       overlay-performance: True\n"
+                                    "       overlay-perf-type: graph\n"
                                     "flows:\n"
-                                    "    flow0: [input,dl_model,output,[320,180,1280,720]]\n";
+                                    "    flow0: [input,dl_model,output,[320,150,1280,720]]\n";
 
 class Backend : public QObject {
     Q_OBJECT
@@ -77,6 +78,7 @@ private:
                         " ! ";
         }
 
+        pipeline += "queue max-size-buffers=1 ! ";
         pipeline += "kmssink driver-name=tidss name=\"qtvideosink\" "
                     "render-rectangle=\""
                     "<" +
@@ -283,7 +285,7 @@ public:
         if (button == 1) {
             pipeline = "gst-pipeline: " + cl_pipeline;
             addSink(pipeline, x, y, width, height);
-        } else if (button == 2) {           
+        } else if (button == 2) {
             pipeline = "gst-pipeline: " + od_pipeline;
             addSink(pipeline, x, y, width, height);
             pipeline += " sync=false";
@@ -370,8 +372,9 @@ public:
         for(i = 0; i < split_string.size(); i++) {
             if (split_string[i].find("detected") != string::npos) {
                 string cameraName = replaceAll(split_string[i],"detected","");
+                cameraName = replaceAll(cameraName,"\033[0;32m","");
+                cameraName = replaceAll(cameraName,"\033[0m","");
                 cameraName = trimString(cameraName);
-
                 map<string, string> info{};
                 for (j = i+1; j < split_string.size(); j++) {
                     if (split_string[j].find("detected") != string::npos)
