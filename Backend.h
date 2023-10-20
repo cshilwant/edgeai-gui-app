@@ -11,6 +11,7 @@
 #include <gst_pipelines/j721e_pipelines.h>
 #include <gst_pipelines/j721s2_pipelines.h>
 #include <gst_pipelines/j784s4_pipelines.h>
+#include <misc/content.h>
 
 using namespace std;
 
@@ -232,6 +233,23 @@ private:
 public:
     string  soc;
     QString sdk_ver;
+    quint32 easter_egg_click_cnt = 0;
+
+    Q_INVOKABLE void increase_easter_egg_click_cnt() {
+        easter_egg_click_cnt++;
+        if (easter_egg_click_cnt >= 3) {
+            easter_egg_click_cnt = 0;
+        }
+    }
+
+    Q_INVOKABLE quint32 get_easter_egg_click_cnt() {
+        return easter_egg_click_cnt;
+    }
+
+    Q_INVOKABLE QString get_random_content() {
+        int rand_idx = std::rand() % (sizeof(CONTENT)/sizeof(CONTENT[0]));
+        return QString::fromStdString(CONTENT[rand_idx]);
+    }
 
     Q_PROPERTY(QString ip_addr READ ip_addr WRITE set_ip_addr NOTIFY ip_addr_changed)
 

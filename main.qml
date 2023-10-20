@@ -5,6 +5,7 @@ import QtQuick.Window 2.1
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.12
 import Qt.labs.folderlistmodel 2.4
+import QtQuick.Controls.Styles 1.4
 
 Window {
     visible: true
@@ -46,6 +47,55 @@ Window {
                 anchors.topMargin: (parent.height - height)/2
                 anchors.leftMargin: 10
                 source: "images/Texas-Instruments.png"
+
+                Button {
+                id: easterEggButton
+                height: parent.height
+                width: parent.width * 0.15
+
+                anchors.left: parent.left
+                anchors.top: parent.top
+
+                background: Rectangle {
+                    color: "#00000000"
+                }
+
+                Timer {
+                    id: timer
+                }
+
+                function delay(delayTime, cb) {
+                    timer.interval = delayTime;
+                    timer.repeat = false;
+                    timer.triggered.connect(cb);
+                    timer.start();
+                }
+
+                onClicked: {
+                    backend.increase_easter_egg_click_cnt();
+                    var click_cnt = backend.get_easter_egg_click_cnt();
+                    if (click_cnt == '0') {
+                        popup_easter_egg_content.text = backend.get_random_content()
+                        popup_easter_egg.open()
+                        delay(5000, function() {
+                            popup_easter_egg.close()
+                            timer.stop()
+                        })
+                    }
+                }
+
+                MouseArea {
+                    width: parent.width
+                    height: parent.height
+                    cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    enabled: false
+                    readonly property bool containsMouse: {
+                        var relativePos = mapFromItem(globalMouseArea, globalMouseArea.mouseX, globalMouseArea.mouseY);
+                        return contains(Qt.point(relativePos.x, relativePos.y));
+                    }
+                }
+            }
+
             }
 
             Text {
@@ -704,6 +754,84 @@ Window {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
+
+            Popup {
+                id: popup_easter_egg
+                anchors.centerIn: parent
+
+                width: parent.width * 0.3
+                height: parent.height * 0.1
+
+                modal: true
+                focus: true
+                closePolicy: Popup.NoAutoClose
+
+                onOpened: {
+                    popup_easter_egg_progress_timer.start()
+                    popup_easter_egg_progress_timer.running = true;
+                }
+
+                onClosed: {
+                    popup_easter_egg_progress_timer.stop()
+                    popup_easter_egg_progress_timer.running = false;
+                    popup_easter_egg_progress.value = 0
+                }
+
+                background: Rectangle {
+                    width: parent.width
+                    height: parent.height
+                    color: "#202020"
+                    radius: 4
+                }
+
+                Text {
+                    id: popup_easter_egg_content
+                    text: ""
+                    font.pointSize: 11
+                    font.bold: true
+                    font.family: "Ubuntu"
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: whiteColor
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                ProgressBar {
+                    id : popup_easter_egg_progress
+                    from: 0
+                    value: 0
+                    to: 100
+                    width: parent.width
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottomMargin: -10
+
+                    contentItem: Item {
+                        Rectangle {
+                            width: popup_easter_egg_progress.visualPosition * parent.width
+                            height: parent.height
+                            radius: 2
+                            color: "#17a81a"
+                        }
+                    }
+                }
+
+                Timer
+                {
+                    id: popup_easter_egg_progress_timer
+                    interval: 50
+                    repeat: true
+                    running: false
+                    onTriggered: popup_easter_egg_progress.value += 1
+                }
+
+
+
+            }
+
         }
         Rectangle {
             id: deviceInfo
