@@ -40,7 +40,7 @@ static string custom_template =     "title: <title>\n"
                                     "       height: 1080\n"
                                     "       overlay-perf-type: graph\n"
                                     "flows:\n"
-                                    "    flow0: [input,dl_model,output,[320,150,1280,720]]\n";
+                                    "    flow0: [input,dl_model,output,[<mosaic_x>,<mosaic_y>,<mosaic_width>,<mosaic_height>]]\n";
 
 class Backend : public QObject {
     Q_OBJECT
@@ -105,6 +105,10 @@ private:
         string input = userInputFile.toStdString();
         string model = userModel.toStdString();
         string modelName = model.substr(model.find_last_of("/\\") + 1);
+        int mosaic_width = 1280;
+        int mosaic_height = 720;
+        int mosaic_x = 320;
+        int mosaic_y = 180;
         if (userInputType.toStdString() == "Camera") {
 
             map<string, map<string,string>> cameraInfo;
@@ -196,6 +200,37 @@ private:
             }
         }
 
+        mosaic_width = std::stoi(width);
+        mosaic_height =  std::stoi(height);
+
+        if (mosaic_width > 1920)
+        {
+            mosaic_width = 1920;
+        }
+
+        if (mosaic_height > 1080)
+        {
+            mosaic_height = 1080;
+        }
+
+        if (mosaic_width % 2 != 0)
+        {
+            mosaic_width -= 1;
+        }
+
+        if (mosaic_height % 2 != 0)
+        {
+            mosaic_height -= 1;
+        }
+
+        mosaic_x = (1920 - mosaic_width)/2;
+        mosaic_y = (1080 - mosaic_height)/2 - 25;
+
+        if (mosaic_y < 0)
+        {
+            mosaic_y = 0;
+        }
+
         config = replaceAll(custom_template,"<title>",title);
         config = replaceAll(config,"<source>",input);
         config = replaceAll(config,"<width>",width);
@@ -205,6 +240,10 @@ private:
         config = replaceAll(config,"<sen-id>",sen_id);
         config = replaceAll(config,"<ldc>",ldc);
         config = replaceAll(config,"<model>",model);
+        config = replaceAll(config,"<mosaic_x>",std::to_string(mosaic_x));
+        config = replaceAll(config,"<mosaic_y>",std::to_string(mosaic_y));
+        config = replaceAll(config,"<mosaic_width>",std::to_string(mosaic_width));
+        config = replaceAll(config,"<mosaic_height>",std::to_string(mosaic_height));
 
         ofstream custom_yaml("/tmp/custom_config.yaml");
         custom_yaml << config;
