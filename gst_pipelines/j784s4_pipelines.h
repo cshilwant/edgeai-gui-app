@@ -11,7 +11,7 @@ static string j784s4_cl_pipeline = "multifilesrc location=/opt/oob-demo-assets/o
                                     \
                                     split_01. ! queue ! video/x-raw, width=672, height=428 ! tiovxmultiscaler target=1 ! video/x-raw, width=224, height=224 ! tiovxdlpreproc model=/opt/model_zoo/TFL-CL-0000-mobileNetV1-mlperf  out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/TFL-CL-0000-mobileNetV1-mlperf ! post_0.tensor \
                                     split_01. ! queue ! video/x-raw, width=1280, height=720 ! post_0.sink \
-                                    tidlpostproc name=post_0 model=/opt/model_zoo/TFL-CL-0000-mobileNetV1-mlperf alpha=0.400000 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
+                                    tidlpostproc name=post_0 model=/opt/model_zoo/TFL-CL-0000-mobileNetV1-mlperf alpha=0.2 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
                                     \
                                     \
                                     tiovxmosaic name=mosaic_0 target=1 src::pool-size=4 \
@@ -24,7 +24,7 @@ static string j784s4_od_pipeline = "multifilesrc location=/opt/oob-demo-assets/o
                                     \
                                     split_01. ! queue ! video/x-raw, width=320, height=320 ! tiovxdlpreproc model=/opt/model_zoo/TFL-OD-2020-ssdLite-mobDet-DSP-coco-320x320  out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/TFL-OD-2020-ssdLite-mobDet-DSP-coco-320x320 ! post_0.tensor \
                                     split_01. ! queue ! video/x-raw, width=1280, height=720 ! post_0.sink \
-                                    tidlpostproc name=post_0 model=/opt/model_zoo/TFL-OD-2020-ssdLite-mobDet-DSP-coco-320x320 alpha=0.400000 viz-threshold=0.600000 top-N=5 display-model=true ! queue ! mosaic_0. \
+                                    tidlpostproc name=post_0 model=/opt/model_zoo/TFL-OD-2020-ssdLite-mobDet-DSP-coco-320x320 alpha=0.2 viz-threshold=0.600000 top-N=5 display-model=true ! queue ! mosaic_0. \
                                     \
                                     \
                                     tiovxmosaic name=mosaic_0 target=1 src::pool-size=4 \
@@ -37,7 +37,7 @@ static string j784s4_ss_pipeline = "multifilesrc location=/opt/oob-demo-assets/o
                                     \
                                     split_01. ! queue ! video/x-raw, width=512, height=512 ! tiovxdlpreproc model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512  out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512 ! post_0.tensor \
                                     split_01. ! queue ! video/x-raw, width=1280, height=720 ! post_0.sink \
-                                    tidlpostproc name=post_0 model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512 alpha=0.400000 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
+                                    tidlpostproc name=post_0 model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512 alpha=0.2 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
                                     \
                                     \
                                     tiovxmosaic name=mosaic_0 target=1 src::pool-size=4 \
