@@ -48,7 +48,7 @@ Also, the platform is chosen to be TDA4VMID-SK for demonstration purposes.
 
 ```
 root@tda4vm-sk:~# cd /home/root/edgeai-gui-app
-root@tda4vm-sk:~# export SOC=j721e  #(j721e,am62a,j721s2,j784s4)
+root@tda4vm-sk:~# export SOC=j721e  #(j721e,am62a,j721s2,j784s4,j722s)
 root@tda4vm-sk:~/edgeai-gui-app# ./edgeai-gui-app -platform linuxfb
 
 ```

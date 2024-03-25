@@ -11,6 +11,7 @@
 #include <gst_pipelines/j721e_pipelines.h>
 #include <gst_pipelines/j721s2_pipelines.h>
 #include <gst_pipelines/j784s4_pipelines.h>
+#include <gst_pipelines/j722s_pipelines.h>
 #include <misc/content.h>
 
 using namespace std;
@@ -337,6 +338,13 @@ public:
             od_pipeline = j784s4_od_pipeline;
             ss_pipeline = j784s4_ss_pipeline;
             multi_channel_pipeline = j784s4_multi_channel_pipeline;
+        }
+        else if (soc == "j722s")
+        {
+            cl_pipeline = j722s_cl_pipeline;
+            od_pipeline = j722s_od_pipeline;
+            ss_pipeline = j722s_ss_pipeline;
+            multi_channel_pipeline = j722s_multi_channel_pipeline;
         }
 
         if (button == 1) {
