@@ -3,9 +3,7 @@ import QtQuick 2.1
 import QtMultimedia 5.1
 import QtQuick.Window 2.1
 import QtQuick.Controls 2.1
-import QtGraphicalEffects 1.12
 import Qt.labs.folderlistmodel 2.4
-import QtQuick.Controls.Styles 1.4
 
 Window {
     visible: true

@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QCameraInfo>
 #include <QStringListModel>
 #include <QNetworkInterface>
 #include <QDirIterator>
