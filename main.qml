@@ -1,7 +1,7 @@
 import QtQml 2.1
-import QtQuick 2.1
-import QtMultimedia 5.1
-import QtQuick.Window 2.1
+import QtQuick 2.14
+import QtMultimedia
+import QtQuick.Window 2.15
 import QtQuick.Controls 2.1
 import Qt.labs.folderlistmodel 2.4
 
