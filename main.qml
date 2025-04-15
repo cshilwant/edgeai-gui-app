@@ -4,6 +4,7 @@ import QtMultimedia
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.1
 import Qt.labs.folderlistmodel 2.4
+import org.freedesktop.gstreamer.Qt6GLVideoItem 1.0
 
 Window {
     visible: true
@@ -189,13 +190,13 @@ Window {
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton1.checked) {
-                            mediaplayer1.source = backend.leftMenuButtonPressed(1, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height)
+                            backend.leftMenuButtonPressed(1, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height, videooutput);
                             leftMenuButton2.enabled = false
                             leftMenuButton3.enabled = false
                             leftMenuButton4.enabled = false
                             leftMenuButton5.enabled = false
                         } else {
-                            mediaplayer1.source = " "
+                            backend.stopVideo();
                             leftMenuButton2.enabled = true
                             leftMenuButton3.enabled = true
                             leftMenuButton4.enabled = true
@@ -244,13 +245,13 @@ Window {
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton2.checked) {
-                            mediaplayer1.source = backend.leftMenuButtonPressed(2, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height)
+                            backend.leftMenuButtonPressed(2, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height, videooutput);
                             leftMenuButton1.enabled = false
                             leftMenuButton3.enabled = false
                             leftMenuButton4.enabled = false
                             leftMenuButton5.enabled = false
                         } else {
-                            mediaplayer1.source = " "
+                            backend.stopVideo();
                             leftMenuButton1.enabled = true
                             leftMenuButton3.enabled = true
                             leftMenuButton4.enabled = true
@@ -295,14 +296,14 @@ Window {
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton3.checked) {
-                            mediaplayer1.source = backend.leftMenuButtonPressed(3, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height)
+                            backend.leftMenuButtonPressed(3, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height, videooutput);
                             leftMenuButton1.enabled = false
                             leftMenuButton2.enabled = false
                             leftMenuButton4.enabled = false
                             leftMenuButton5.enabled = false
 
                         } else {
-                            mediaplayer1.source = " "
+                            backend.stopVideo();
                             leftMenuButton1.enabled = true
                             leftMenuButton2.enabled = true
                             leftMenuButton4.enabled = true
@@ -347,14 +348,14 @@ Window {
                     }
                     onCheckStateChanged: {
                         if (leftMenuButton4.checked) {
-                            mediaplayer1.source = backend.leftMenuButtonPressed(4, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height)
+                            backend.leftMenuButtonPressed(4, leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2), videooutput.width, videooutput.height, videooutput);
                             leftMenuButton1.enabled = false
                             leftMenuButton2.enabled = false
                             leftMenuButton3.enabled = false
                             leftMenuButton5.enabled = false
 
                         } else {
-                            mediaplayer1.source = " "
+                            backend.stopVideo();
                             leftMenuButton1.enabled = true
                             leftMenuButton2.enabled = true
                             leftMenuButton3.enabled = true
@@ -407,7 +408,7 @@ Window {
                             leftMenuButton3.enabled = false
                             leftMenuButton4.enabled = false
                         } else {
-                            mediaplayer1.source = " "
+                            backend.stopVideo();
                             leftMenuButton1.enabled = true
                             leftMenuButton2.enabled = true
                             leftMenuButton3.enabled = true
@@ -467,18 +468,11 @@ Window {
                     anchors.margins: parent.border.width * 2
                 }
 
-                MediaPlayer {
-                    id: mediaplayer1
-                    objectName: "mediaplayer1"
-                    autoPlay: true
-                }
-
-                VideoOutput {
+                GstGLQt6VideoItem {
+                    objectName: "videoItem"
                     id: videooutput
                     width: parent.width
                     height: parent.height
-                    source: mediaplayer1
-                    fillMode: VideoOutput.PreserveAspectCrop
                     anchors.fill: parent
                     anchors.margins: parent.border.width * 2
                 }
@@ -697,9 +691,9 @@ Window {
                         } else {
                             popupError.text = "Loading ..."
                             // Send userdata to CPP
-                            mediaplayer1.source = backend.popupOkPressed(inputType, inputFile, modelFile,
+                            backend.popupOkPressed(inputType, inputFile, modelFile,
                                                                            leftMenu.width + (alignVideo.border.width * 2), topBar.height + ((mainWindow.height - alignVideo.height)/2) + (alignVideo.border.width * 2),
-                                                                           videooutput.width, videooutput.height)
+                                                                           videooutput.width, videooutput.height, videooutput);
                             popup.close()
                         }
                     }

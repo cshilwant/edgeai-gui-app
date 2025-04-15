@@ -10,6 +10,9 @@ include(GNUInstallDirs)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Widgets Multimedia Quick)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(gstreamer REQUIRED IMPORTED_TARGET gstreamer-1.0>=1.22)
+
 add_compile_definitions(RT_BUILD=${RT_BUILD})
 
 set(SOURCES
@@ -31,6 +34,7 @@ target_link_libraries(edgeai-gui-app PRIVATE
     Qt::Widgets
     Qt::Multimedia
     Qt::Quick
+    PkgConfig::gstreamer
 )
 
 install(TARGETS edgeai-gui-app

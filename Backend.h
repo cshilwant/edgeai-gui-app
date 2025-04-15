@@ -13,6 +13,9 @@
 #include <gst_pipelines/j784s4_pipelines.h>
 #include <gst_pipelines/j722s_pipelines.h>
 #include <misc/content.h>
+#include <gst/gst.h>
+#include <QDebug>
+#include <QQuickItem>
 
 using namespace std;
 
@@ -48,6 +51,7 @@ class Backend : public QObject {
 
 private:
     string pipeline;
+    GstElement *gst_pipeline = NULL;
 
     void addSink(string &pipeline, int xPos, int yPos, int width, int height) {
         /* tiovxmultiscaler only supports even resolution.*/
@@ -81,7 +85,7 @@ private:
         }
 
         pipeline += "queue max-size-buffers=1 ! ";
-        pipeline += "kmssink driver-name=tidss name=\"qtvideosink\" "
+        pipeline += "kmssink driver-name=tidss name=\"sink\" "
                     "render-rectangle=\""
                     "<" +
                     std::to_string(xPos) +
@@ -262,7 +266,7 @@ private:
         while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
             result += buffer.data();
         }
-        result = replaceAll(result,"gst-launch-1.0","gst-pipeline:");
+        result = replaceAll(result,"gst-launch-1.0","");
         result = replaceAll(result,"tiperfoverlay","tiperfoverlay main-title=null");
         result = replaceAll(result,"\n","");
         return result;
@@ -306,7 +310,7 @@ public:
 
     explicit Backend (QObject* parent = nullptr) : QObject(parent) {}
 
-    Q_INVOKABLE QString leftMenuButtonPressed(int button, int x, int y, int width, int height) {
+    Q_INVOKABLE void leftMenuButtonPressed(int button, int x, int y, int width, int height, QObject* object) {
         string cl_pipeline;
         string od_pipeline;
         string ss_pipeline;
@@ -348,28 +352,60 @@ public:
         }
 
         if (button == 1) {
-            pipeline = "gst-pipeline: " + cl_pipeline;
+            pipeline = cl_pipeline;
             addSink(pipeline, x, y, width, height);
         } else if (button == 2) {
-            pipeline = "gst-pipeline: " + od_pipeline;
+            pipeline = od_pipeline;
             addSink(pipeline, x, y, width, height);
             pipeline += " sync=false";
         } else if (button == 3) {
-            pipeline = "gst-pipeline: " + ss_pipeline;
+            pipeline = ss_pipeline;
             addSink(pipeline, x, y, width, height);
             pipeline += " sync=false";
         } else if (button == 4) {
-            pipeline = "gst-pipeline: " + multi_channel_pipeline;
+            pipeline = multi_channel_pipeline;
             addSink(pipeline, x, y, width, height);
             pipeline += " sync=false";
         }
         else {
             printf("WARNING: Invalid Button click from Left Menu!\n");
         }
-        return QString().fromStdString(pipeline);
+        QString qPipeline = QString().fromStdString(pipeline);
+        startVideo(object, qPipeline);
+        return;
     }
 
-    Q_INVOKABLE QString popupOkPressed(QString InputType, QString Input, QString Model, int x, int y, int width, int height) {
+    Q_INVOKABLE void startVideo(QObject* object, QString pipeline){
+        GError *error = NULL;
+        gst_pipeline = gst_parse_launch (pipeline.toLatin1().data(), &error);
+        if (error) {
+            g_printerr("Failed to parse launch: %s\n", error->message);
+            g_error_free(error);
+            return;
+        }
+
+        /* find and set the videoItem on the sink */
+        GstElement *sink = gst_bin_get_by_name( GST_BIN( gst_pipeline ), "sink" );
+        g_assert(sink);
+        QQuickItem *videoItem = qobject_cast<QQuickItem*>(object);
+        g_assert(videoItem);
+        g_object_set(sink, "widget", videoItem, NULL);
+
+        qDebug() << "Starting video";
+        gst_element_set_state(gst_pipeline, GST_STATE_PLAYING);
+    }
+
+    Q_INVOKABLE void stopVideo(){
+        if (gst_pipeline) {
+            qDebug() << "Stopping video";
+            gst_element_set_state (gst_pipeline, GST_STATE_NULL);
+            qDebug() << "Removing gst_pipeline";
+            gst_object_unref (gst_pipeline);
+            gst_pipeline = NULL;
+        }
+    }
+
+    Q_INVOKABLE void popupOkPressed(QString InputType, QString Input, QString Model, int x, int y, int width, int height, QObject* object) {
         cout << "Input Type = " << InputType.toStdString() << ";\nInput File = " << Input.toStdString() << ";\nModel = " << Model.toStdString() << endl;
 
         generateYaml(InputType, Input, Model);
@@ -388,7 +424,9 @@ public:
         }
 
         cout << "Custom Pipeline: \n" << pipeline << endl;
-        return QString().fromStdString(pipeline);
+        QString qPipeline = QString().fromStdString(pipeline);
+        startVideo(object, qPipeline);
+        return;
     }
 
     string replaceAll(string str, const string &remove, const string &insert) {
