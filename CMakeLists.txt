@@ -17,6 +17,7 @@ add_compile_definitions(RT_BUILD=${RT_BUILD})
 
 set(SOURCES
     main.cpp
+    Backend.cpp
     Backend.h
 )
 
