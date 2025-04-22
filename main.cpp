@@ -75,14 +75,6 @@ int main(int argc, char *argv[]) {
     std::signal(SIGINT,  sigHandler);
     std::signal(SIGTERM, sigHandler);
 
-    // the plugin must be loaded before loading the qml file to register the GstGLVideoItem qml item
-    GstElement *sink = gst_element_factory_make ("qml6glsink", NULL);
-
-    if (!sink)
-        qWarning() << "Warning: qml6glsink unavailable";
-    else
-        gst_object_unref(sink);
-
     QQmlApplicationEngine engine;
 
     // Get SOC
