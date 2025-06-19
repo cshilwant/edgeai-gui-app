@@ -35,9 +35,9 @@ static string am62a_od_pipeline = "multifilesrc location=/opt/oob-demo-assets/oo
 static string am62a_ss_pipeline = "multifilesrc location=/opt/oob-demo-assets/oob-gui-video2.h264 loop=true ! h264parse ! v4l2h264dec capture-io-mode=5 ! tiovxmemalloc ! video/x-raw,format=NV12 ! \
                                    tiovxmultiscaler name=split_01 src_0::roi-startx=0 src_0::roi-starty=0 src_0::roi-width=1280 src_0::roi-height=768 target=0 \
                                    \
-                                   split_01. ! queue ! video/x-raw, width=512, height=512 ! tiovxdlpreproc model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512  out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512 ! post_0.tensor \
+                                   split_01. ! queue ! video/x-raw, width=384, height=384 ! tiovxdlpreproc model=/opt/model_zoo/ONR-SS-8690-fpnlite-aspp-regnetx400mf-ade20k32-384x384  out-pool-size=4 ! application/x-tensor-tiovx ! tidlinferer target=1 model=/opt/model_zoo/ONR-SS-8690-fpnlite-aspp-regnetx400mf-ade20k32-384x384 ! post_0.tensor \
                                    split_01. ! queue ! video/x-raw, width=1280, height=720 ! post_0.sink \
-                                   tidlpostproc name=post_0 model=/opt/model_zoo/ONR-SS-8610-deeplabv3lite-mobv2-ade20k32-512x512 alpha=0.2 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
+                                   tidlpostproc name=post_0 model=/opt/model_zoo/ONR-SS-8690-fpnlite-aspp-regnetx400mf-ade20k32-384x384 alpha=0.2 viz-threshold=0.500000 top-N=5 display-model=true ! queue ! mosaic_0. \
                                    \
                                    \
                                    tiovxmosaic name=mosaic_0 target=1 src::pool-size=4 \
