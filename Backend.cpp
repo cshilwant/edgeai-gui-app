@@ -59,7 +59,7 @@ void Backend::addSink(string &pipeline, int xPos, int yPos, int width, int heigh
     }
 
     pipeline += "queue max-size-buffers=1 ! ";
-    pipeline += "kmssink driver-name=tidss name=\"sink\" "
+    pipeline += "qml6glsink name=\"sink\" "
                 "render-rectangle=\""
                 "<" +
                 std::to_string(xPos) +
